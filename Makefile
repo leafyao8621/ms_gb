@@ -21,5 +21,5 @@ clean:
 	@rm $(OBJ)
 	@rm $(BIN)
 
-run:
+run: $(BIN)
 	@vba $(BIN)
