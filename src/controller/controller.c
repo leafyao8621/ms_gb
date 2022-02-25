@@ -9,6 +9,7 @@
 
 static unsigned char background[360];
 static unsigned char field[64];
+static unsigned idx;
 
 static void render_board(unsigned char reveal) {
     static unsigned char i, *iter_board, *iter_field, val;
@@ -32,12 +33,14 @@ static void render_board(unsigned char reveal) {
 }
 
 static void reset_game(void) {
+    idx = 0;
+
     core_initialize();
     core_reset();
 
     render_board(0);
     set_bkg_tiles(6, 5, 8, 8, field);
-
+    move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
 }
 
 void controller_initialize(void) {
@@ -49,7 +52,6 @@ void controller_initialize(void) {
     SPRITES_8x8;
     set_sprite_data(0, 1, sprites);
     set_sprite_tile(0, 0);
-    move_sprite(0, 7 << 3, 10 << 3);
 
     SHOW_BKG;
     SHOW_SPRITES;
