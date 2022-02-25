@@ -20,8 +20,7 @@ void core_reset(void) {
     mines = 0;
     memset(board, 0, 64);
     for (; mines < 10; ++mines) {
-        idx = rand() & 0x3f;
-        for (; board[idx] & MINE_FLAG; idx = rand() & 0x3f);
+        for (idx = rand() & 0x3f; board[idx] & MINE_FLAG; idx = rand() & 0x3f);
         board[idx] |= MINE_FLAG;
     }
     for (i = 0, iter = board; i < 8; ++i) {
