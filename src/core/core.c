@@ -66,6 +66,7 @@ void core_check(unsigned char idx) {
     buf_ptr = buf;
     board[idx] |= CHECK_FLAG;
     *(buf_ptr++) = idx;
+    ++checked;
     for (; buf_ptr != buf;) {
         --buf_ptr;
         val = *buf_ptr;
@@ -83,6 +84,7 @@ void core_check(unsigned char idx) {
                         !(board[cur] & CHECK_FLAG)) {
                         board[cur] |= CHECK_FLAG;
                         *(buf_ptr++) = cur;
+                        ++checked;
                     }
                 }
             }

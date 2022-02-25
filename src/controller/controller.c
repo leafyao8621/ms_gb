@@ -30,6 +30,7 @@ static void render_board(unsigned char reveal) {
             }
         }
     }
+    set_bkg_tiles(6, 5, 8, 8, field);
 }
 
 static void reset_game(void) {
@@ -39,7 +40,6 @@ static void reset_game(void) {
     core_reset();
 
     render_board(0);
-    set_bkg_tiles(6, 5, 8, 8, field);
     move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
 }
 
@@ -58,4 +58,42 @@ void controller_initialize(void) {
     DISPLAY_ON;
 
     reset_game();
+    wait_vbl_done();
+}
+
+void controller_main_loop(void) {
+    static unsigned char keys, prev;
+    prev = 0;
+    for (;;) {
+        keys = joypad();
+        if ((keys & J_LEFT) && !(prev & J_LEFT)) {
+            idx = (idx & 0xf8) | (((idx & 0x7) - 1) & 0x7);
+            move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
+        }
+        if ((keys & J_RIGHT) && !(prev & J_RIGHT)) {
+            idx = (idx & 0xf8) | (((idx & 0x7) + 1) & 0x7);
+            move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
+        }
+        if ((keys & J_UP) && !(prev & J_UP)) {
+            idx = (idx & 0x7) | (((idx & 0x38) - 8) & 0x38);
+            move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
+        }
+        if ((keys & J_DOWN) && !(prev & J_DOWN)) {
+            idx = (idx & 0x7) | (((idx & 0x38) + 8) & 0x38);
+            move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
+        }
+        if ((keys & J_A) && !(prev & J_A)) {
+            core_check(idx);
+            render_board(checked == 54 || death);
+        }
+        if ((keys & J_B) && !(prev & J_B)) {
+            core_mark(idx);
+            render_board(0);
+        }
+        if ((keys & J_START) && !(prev & J_START)) {
+            reset_game();
+        }
+        prev = keys;
+        wait_vbl_done();
+    }
 }
