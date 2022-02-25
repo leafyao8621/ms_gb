@@ -3,6 +3,7 @@
 #include "controller.h"
 #include "../core/core.h"
 #include "../assets/tiles.h"
+#include "../assets/sprites.h"
 
 #define CNT_START 2
 
@@ -30,20 +31,29 @@ static void render_board(unsigned char reveal) {
     }
 }
 
+static void reset_game(void) {
+    core_initialize();
+    core_reset();
+
+    render_board(0);
+    set_bkg_tiles(6, 5, 8, 8, field);
+
+}
+
 void controller_initialize(void) {
     set_bkg_data(0, 13, tiles);
-
-    VBK_REG = 1;
-    VBK_REG = 0;
 
     memset(background, 0, 360);
     set_bkg_tiles(0, 0, 20, 18, background);
 
-    core_initialize();
-
-    render_board(1);
-    set_bkg_tiles(0, 0, 8, 8, field);
+    SPRITES_8x8;
+    set_sprite_data(0, 1, sprites);
+    set_sprite_tile(0, 0);
+    move_sprite(0, 7 << 3, 10 << 3);
 
     SHOW_BKG;
+    SHOW_SPRITES;
     DISPLAY_ON;
+
+    reset_game();
 }
