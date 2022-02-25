@@ -19,6 +19,7 @@ clean:
 	@rm $(LST)
 	@rm $(SYM)
 	@rm $(OBJ)
+	@rm $(IHX)
 	@rm $(BIN)
 
 run: $(BIN)
