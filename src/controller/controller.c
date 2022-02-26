@@ -62,7 +62,7 @@ void controller_initialize(void) {
 }
 
 void controller_main_loop(void) {
-    static unsigned char keys, prev;
+    static unsigned char keys, prev, finished;
     prev = 0;
     for (;;) {
         keys = joypad();
@@ -83,12 +83,18 @@ void controller_main_loop(void) {
             move_sprite(0, (7 + (idx & 0x7)) << 3, (7 + (idx >> 3)) << 3);
         }
         if ((keys & J_A) && !(prev & J_A)) {
-            core_check(idx);
-            render_board(checked == 54 || death);
+            finished = checked == 54 || death;
+            if (!finished) {
+                core_check(idx);
+            }
+            render_board(finished);
         }
         if ((keys & J_B) && !(prev & J_B)) {
-            core_mark(idx);
-            render_board(0);
+            finished = checked == 54 || death;
+            if (!finished) {
+                core_mark(idx);
+            }
+            render_board(finished);
         }
         if ((keys & J_START) && !(prev & J_START)) {
             reset_game();
