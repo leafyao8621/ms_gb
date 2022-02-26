@@ -87,7 +87,7 @@ void controller_main_loop(void) {
             if (!finished) {
                 core_check(idx);
             }
-            render_board(finished);
+            render_board(checked == 54 || death);
         }
         if ((keys & J_B) && !(prev & J_B)) {
             finished = checked == 54 || death;
